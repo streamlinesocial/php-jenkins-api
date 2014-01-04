@@ -9,11 +9,28 @@ class Source
     private $_url;
     private $_json;
 
-    public function __construct($url)
+    public function __construct($url, $user = false, $token = false)
     {
         $this->_url = $url;
 
-        $json = @file_get_contents($url);
+        $headers = array('Content-Type: application/json');
+
+        // start the curl request
+        $process = curl_init($url);
+
+        // configs used for user/token auto
+        if ($user && $token) {
+            $headers[] = "Authorization: Basic " . base64_encode("$user:$token");
+            curl_setopt($process, CURLOPT_USERPWD, "$user:$token");
+        }
+
+        // standard configs
+        curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($process, CURLOPT_TIMEOUT, 30);
+        curl_setopt($process, CURLOPT_RETURNTRANSFER, true);
+        $json = curl_exec($process);
+        curl_close($process);
+
         $this->_json = @json_decode($json);
 
         if (!$this->_json) {
