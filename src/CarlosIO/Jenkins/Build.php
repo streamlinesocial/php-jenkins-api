@@ -11,6 +11,13 @@ class Build extends Object
         return $this->_json->number;
     }
 
+    public function getTimestamp()
+    {
+        // the jenkins timestamps for builds come back with 3 trailing
+        // zeros that php doesn't need
+        return intval(substr($this->_json->timestamp, 0, -3));
+    }
+
     public function getChangeSet()
     {
         return new ChangeSet($this->_json->changeSet);

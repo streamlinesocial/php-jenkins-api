@@ -22,6 +22,7 @@ class Object
 
     protected function _getItems($propertyName, $object)
     {
+        $object = "CarlosIO\\Jenkins\\" . $object;
         $items = array();
         if (!isset($this->_json->{$propertyName})) {
             return $items;
